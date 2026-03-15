@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Deliverizon Fleet Monitor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100vw;height:100vh;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;background:#F8F9FA}
+
+  #app{display:flex;width:100vw;height:100vh}
+
+  /* ─── SIDEBAR (LEFT) ─── */
+  #sidebar{
+    width:380px;min-width:380px;height:100vh;
+    background:#FFFFFF;border-right:1px solid #E5E7EB;
+    display:flex;flex-direction:column;
+    box-shadow:4px 0 24px rgba(0,0,0,0.05);
+    z-index:1000;
+  }
+
+  .sidebar-header{padding:22px 22px 16px;border-bottom:1px solid #F0F0F0}
+  .brand-row{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+  .brand-logo{
+    width:36px;height:36px;background:#EE0000;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:19px;font-weight:700;color:white;
+  }
+  .brand-title{font-size:19px;font-weight:700;color:#1A1A1A;letter-spacing:-0.3px}
+  .brand-subtitle{font-size:11px;color:#6B7280;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+
+  .live-row{display:flex;align-items:center;gap:8px;margin-top:11px;font-size:12.5px;color:#6B7280;font-weight:500}
+  .live-dot{width:7px;height:7px;background:#10B981;border-radius:50%;animation:pulse-live 2s ease-in-out infinite}
+  @keyframes pulse-live{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.5)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+
+  .section-label{
+    font-size:9.5px;font-weight:700;color:#9CA3AF;
+    letter-spacing:1.2px;text-transform:uppercase;
+    padding:14px 22px 6px;
+  }
+
+  /* Bot cards */
+  .bot-list{padding:0 14px 6px}
+  .bot-card{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border-radius:9px;margin-bottom:1px;
+    transition:background 0.4s;
+  }
+  .bot-card.flash{background:#FEF2F2}
+
+  .dot-wrap{width:26px;height:26px;display:flex;align-items:center;justify-content:center;position:relative}
+  .card-dot{width:10px;height:10px;border-radius:50%;background:#EE0000;position:relative;z-index:1}
+  .card-dot.muted{background:#CC9999}
+  .card-dot.charging{background:#F59E0B}
+  .card-ring{
+    position:absolute;width:22px;height:22px;border-radius:50%;
+    border:2px solid rgba(238,0,0,0.2);top:2px;left:2px;
+    animation:ring 2s ease-in-out infinite;
+  }
+  .card-ring.muted{border-color:rgba(204,153,153,0.15);animation-duration:3s}
+  .card-ring.charging{border-color:rgba(245,158,11,0.25);animation-duration:2.5s}
+  @keyframes ring{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.4);opacity:0}}
+
+  .bot-info{flex:1;min-width:0}
+  .bot-name{font-size:12.5px;font-weight:600;color:#1A1A1A}
+  .bot-task{font-size:10.5px;color:#6B7280;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .badge{
+    padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;
+    white-space:nowrap;transition:all 0.4s;
+  }
+  .b-delivering{background:#D1FAE5;color:#065F46}
+  .b-picking-up{background:#FEF3C7;color:#92400E}
+  .b-returning{background:#DBEAFE;color:#1E40AF}
+  .b-idle{background:#F3F4F6;color:#6B7280}
+  .b-delivered{background:#D1FAE5;color:#065F46}
+  .b-charging{background:#FFF7ED;color:#9A3412}
+  .b-awaiting{background:#EDE9FE;color:#5B21B6}
+  .b-unlocked{background:#D1FAE5;color:#065F46}
+  .b-assigned{background:#FEF3C7;color:#92400E}
+  .b-stored{background:#DBEAFE;color:#1E40AF}
+
+  /* Activity feed */
+  .activity-section{flex:1;display:flex;flex-direction:column;border-top:1px solid #F0F0F0;min-height:0;overflow:hidden}
+  .feed-list{flex:1;padding:2px 14px;overflow:hidden}
+
+  .feed-item{
+    display:flex;align-items:flex-start;gap:9px;
+    padding:8px 8px;border-bottom:1px solid #F7F7F7;
+  }
+  .feed-item.fresh{animation:slide-in .45s ease-out}
+  @keyframes slide-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  .feed-item.dim{opacity:.35}
+
+  .fi-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+  .fi-text{font-size:11.5px;color:#374151;line-height:1.35;flex:1}
+  .fi-time{font-size:10px;color:#9CA3AF;white-space:nowrap;flex-shrink:0}
+
+  /* Stats */
+  .stats-bar{
+    padding:14px 22px;border-top:1px solid #F0F0F0;
+    display:flex;background:#FAFAFA;
+  }
+  .stat{flex:1;text-align:center;position:relative}
+  .stat:not(:last-child)::after{content:'';position:absolute;right:0;top:4px;bottom:4px;width:1px;background:#E5E7EB}
+  .stat-val{font-size:18px;font-weight:700;color:#1A1A1A}
+  .stat-lbl{font-size:9.5px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;font-weight:500}
+
+  /* ─── MAP ─── */
+  #map-wrap{flex:1;position:relative;height:100vh}
+  #map{width:100%;height:100%;background:#e8e8e8}
+  .leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
+
+  /* Map markers */
+  .hub-m{display:flex;flex-direction:column;align-items:center}
+  .hub-box{
+    width:34px;height:34px;background:#990000;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;
+    color:white;font-weight:700;font-size:16px;font-family:'DM Sans',sans-serif;
+    box-shadow:0 3px 12px rgba(153,0,0,0.35);border:2.5px solid rgba(255,255,255,0.95);
+  }
+  .hub-tag{
+    margin-top:4px;white-space:nowrap;font-size:8.5px;font-weight:700;
+    color:#990000;background:rgba(255,255,255,0.92);padding:2px 7px;
+    border-radius:3px;font-family:'DM Sans',sans-serif;letter-spacing:.4px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .bm{position:relative;width:28px;height:28px}
+  .bm-dot{
+    position:absolute;top:4px;left:4px;width:20px;height:20px;
+    border-radius:50%;background:#EE0000;border:2.5px solid white;
+    box-shadow:0 2px 10px rgba(238,0,0,0.4);transition:background .4s,transform .3s;
+  }
+  .bm-dot.muted{background:#CC9999;box-shadow:0 2px 8px rgba(204,153,153,0.3)}
+  .bm-dot.charging{background:#F59E0B;box-shadow:0 2px 8px rgba(245,158,11,0.4)}
+  .bm-dot.pop{animation:pop .55s ease-out}
+  @keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.7)}100%{transform:scale(1)}}
+
+  .bm-ring{
+    position:absolute;top:0;left:0;width:28px;height:28px;
+    border-radius:50%;border:2px solid rgba(238,0,0,0.25);
+    animation:mring 2s ease-in-out infinite;
+  }
+  .bm-ring.muted{border-color:rgba(204,153,153,0.15);animation-duration:3s}
+  .bm-ring.charging{border-color:rgba(245,158,11,0.2);animation-duration:2.5s}
+  @keyframes mring{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.55);opacity:0}}
+
+  .bm-lbl{
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    white-space:nowrap;font-size:9.5px;font-weight:600;color:#fff;
+    background:rgba(25,25,25,0.82);padding:1.5px 6px;border-radius:3px;
+    font-family:'DM Sans',sans-serif;box-shadow:0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  .dest-m{
+    width:16px;height:16px;border-radius:50%;
+    border:2px dashed rgba(238,0,0,0.5);
+    animation:dpulse 2.5s ease-in-out infinite;
+  }
+  @keyframes dpulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.55;transform:scale(1.12)}}
+
+  /* Destination labels */
+  .dest-label{
+    white-space:nowrap;font-size:9px;font-weight:600;
+    color:#6B7280;background:rgba(255,255,255,0.88);
+    padding:1px 5px;border-radius:3px;
+    font-family:'DM Sans',sans-serif;
+    box-shadow:0 1px 2px rgba(0,0,0,0.06);
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-row">
+        <div class="brand-logo">D</div>
+        <div>
+          <div class="brand-title">DELIVERIZON</div>
+          <div class="brand-subtitle">Fleet Monitor</div>
+        </div>
+      </div>
+      <div class="live-row">
+        <div class="live-dot"></div>
+        <span><strong style="color:#10B981">5</strong>&nbsp;bots online · Northeastern University</span>
+      </div>
+    </div>
+    <div class="section-label">Fleet Status</div>
+    <div class="bot-list" id="cards"></div>
+    <div class="activity-section">
+      <div class="section-label">Activity</div>
+      <div class="feed-list" id="feed"></div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-val">23</div><div class="stat-lbl">Deliveries</div></div>
+      <div class="stat"><div class="stat-val">9 min</div><div class="stat-lbl">Avg Time</div></div>
+      <div class="stat"><div class="stat-val">98.4%</div><div class="stat-lbl">On-Time</div></div>
+    </div>
+  </div>
+  <div id="map-wrap"><div id="map"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+window.addEventListener('load', function(){
+
+  /* ═══ MAP ═══ */
+  var map = L.map('map',{
+    center:[42.3375,-71.0915], zoom:15,
+    zoomControl:false, attributionControl:false,
+    dragging:false, scrollWheelZoom:false, doubleClickZoom:false,
+    touchZoom:false, keyboard:false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    maxZoom:19, subdomains:'abcd'
+  }).addTo(map);
+  setTimeout(function(){map.invalidateSize()},100);
+  setTimeout(function(){map.invalidateSize()},600);
+  setTimeout(function(){map.invalidateSize()},1500);
+
+  /* ═══ CONSTANTS ═══ */
+  var HUB=[42.3388,-71.0900];
+  var TICK=40, LOOP=33000;
+
+  /* ═══ DESTINATION LABELS ═══ */
+  var destLabels = [
+    {pos:[42.3306,-71.0987], text:'Mission Hill'},
+    {pos:[42.3384,-71.0881], text:'Snell Library'},
+    {pos:[42.3405,-71.0904], text:'Marino Center'},
+    {pos:[42.3371,-71.0927], text:'West Village'},
+    {pos:[42.3368,-71.0916], text:'Int\'l Village'}
+  ];
+  destLabels.forEach(function(d){
+    L.marker(d.pos,{
+      icon:L.divIcon({className:'',html:'<div class="dest-label">'+d.text+'</div>',iconSize:[60,16],iconAnchor:[30,8]}),
+      interactive:false
+    }).addTo(map);
+  });
+
+  /* ═══ HUB ═══ */
+  L.marker(HUB,{
+    icon:L.divIcon({className:'',
+      html:'<div class="hub-m"><div class="hub-box">H</div><div class="hub-tag">DELIVERIZON HUB</div></div>',
+      iconSize:[34,50],iconAnchor:[17,17]
+    })
+  }).addTo(map);
+
+  /* ═══ BOT STATE ═══ */
+  var B = [
+    {id:'b1',name:'Deliverizer 1',lbl:'D1',
+     status:'Delivering',badge:'b-delivering',task:'Laptop Charger → Mission Hill',
+     dotCls:'',ringCls:''},
+    {id:'b2',name:'Deliverizer 2',lbl:'D2',
+     status:'Picking Up',badge:'b-picking-up',task:'Textbook from Snell Library',
+     dotCls:'',ringCls:''},
+    {id:'b3',name:'Deliverizer 3',lbl:'D3',
+     status:'Returning',badge:'b-returning',task:'Returning to Hub',
+     dotCls:'',ringCls:''},
+    {id:'b4',name:'Deliverizer 4',lbl:'D4',
+     status:'Charging',badge:'b-charging',task:'Charging at Hub — 91%',
+     dotCls:'charging',ringCls:'charging'},
+    {id:'b5',name:'Deliverizer 5',lbl:'D5',
+     status:'Delivering',badge:'b-delivering',task:'Keys → West Village',
+     dotCls:'',ringCls:''}
+  ];
+
+  /* ═══ WAYPOINTS ═══ */
+  var WP = {
+    b1_deliver:[[42.3380,-71.0908],[42.3370,-71.0918],[42.3362,-71.0925],[42.3352,-71.0935],[42.3340,-71.0948],[42.3328,-71.0960],[42.3318,-71.0972],[42.3308,-71.0985]],
+    b1_return:[[42.3308,-71.0985],[42.3318,-71.0972],[42.3328,-71.0960],[42.3340,-71.0948],[42.3352,-71.0935],[42.3362,-71.0925],[42.3370,-71.0918],[42.3380,-71.0908],[42.3388,-71.0900]],
+    b2_pickup:[[42.3388,-71.0900],[42.3387,-71.0894],[42.3386,-71.0888],[42.3385,-71.0884]],
+    b2_deliver:[[42.3385,-71.0884],[42.3388,-71.0886],[42.3393,-71.0890],[42.3398,-71.0895],[42.3403,-71.0903]],
+    b3_return:[[42.3425,-71.0870],[42.3418,-71.0876],[42.3410,-71.0880],[42.3403,-71.0885],[42.3396,-71.0890],[42.3388,-71.0900]],
+    b4_from_hub:[[42.3388,-71.0900],[42.3385,-71.0903],[42.3378,-71.0908],[42.3370,-71.0916]],
+    b5_deliver:[[42.3392,-71.0895],[42.3388,-71.0900],[42.3382,-71.0910],[42.3376,-71.0920],[42.3373,-71.0925]],
+    b5_newpickup:[[42.3373,-71.0925],[42.3370,-71.0918],[42.3368,-71.0914]]
+  };
+
+  /* ═══ MAP MARKERS ═══ */
+  var markers={}, routes={}, dests={};
+
+  function botIcon(b){
+    return L.divIcon({className:'',
+      html:'<div class="bm"><div class="bm-ring '+b.ringCls+'"></div><div class="bm-dot '+b.dotCls+'" id="md-'+b.id+'"></div><div class="bm-lbl">'+b.lbl+'</div></div>',
+      iconSize:[28,28],iconAnchor:[14,14]
+    });
+  }
+  function destIcon(){
+    return L.divIcon({className:'',html:'<div class="dest-m"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+  }
+
+  // Initial positions
+  var initPos={b1:WP.b1_deliver[0],b2:WP.b2_pickup[0],b3:WP.b3_return[0],b4:HUB,b5:WP.b5_deliver[0]};
+  var initDest={b1:WP.b1_deliver[WP.b1_deliver.length-1],b2:WP.b2_pickup[WP.b2_pickup.length-1],b3:HUB,b5:WP.b5_deliver[WP.b5_deliver.length-1]};
+
+  B.forEach(function(b){
+    markers[b.id]=L.marker(initPos[b.id],{icon:botIcon(b),zIndexOffset:1000}).addTo(map);
+  });
+  ['b1','b2','b3','b5'].forEach(function(id){
+    var wps = id==='b1'?WP.b1_deliver:id==='b2'?WP.b2_pickup:id==='b3'?WP.b3_return:WP.b5_deliver;
+    routes[id]=L.polyline(wps,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+  });
+  Object.keys(initDest).forEach(function(id){
+    dests[id]=L.marker(initDest[id],{icon:destIcon()}).addTo(map);
+  });
+
+  /* ═══ SIDEBAR ═══ */
+  function renderCards(){
+    var h='';
+    B.forEach(function(b){
+      h+='<div class="bot-card" id="c-'+b.id+'"><div class="dot-wrap"><div class="card-dot '+b.dotCls+'"></div><div class="card-ring '+b.ringCls+'"></div></div><div class="bot-info"><div class="bot-name">'+b.name+'</div><div class="bot-task" id="t-'+b.id+'">'+b.task+'</div></div><div class="badge '+b.badge+'" id="bg-'+b.id+'">'+b.status+'</div></div>';
+    });
+    document.getElementById('cards').innerHTML=h;
+  }
+  renderCards();
+
+  function upBot(b){
+    var bg=document.getElementById('bg-'+b.id);
+    var tk=document.getElementById('t-'+b.id);
+    if(bg){bg.className='badge '+b.badge;bg.textContent=b.status}
+    if(tk)tk.textContent=b.task;
+    markers[b.id].setIcon(botIcon(b));
+    var c=document.getElementById('c-'+b.id);
+    if(c){c.classList.add('flash');setTimeout(function(){c.classList.remove('flash')},1800)}
+  }
+  function popDot(id){
+    var d=document.getElementById('md-'+id);
+    if(d){d.classList.add('pop');setTimeout(function(){d.classList.remove('pop')},600)}
+  }
+
+  /* ═══ ACTIVITY FEED ═══ */
+  var feed=[
+    {i:'📦',t:'Notebook delivered — Stetson East',tm:'5 min ago',o:true},
+    {i:'🔓',t:'Compartment unlocked — Hoodie received',tm:'6 min ago',o:true},
+    {i:'🔋',t:'Deliverizer 2 fully charged',tm:'8 min ago',o:true},
+    {i:'📦',t:'Phone Charger stored at Hub — pickup 2:30 PM',tm:'10 min ago',o:true}
+  ];
+
+  function renderFeed(){
+    var h='';
+    feed.forEach(function(f,i){
+      var cls='feed-item';
+      if(i===0&&!f.o)cls+=' fresh';
+      if(f.o)cls+=' dim';
+      h+='<div class="'+cls+'"><span class="fi-icon">'+f.i+'</span><span class="fi-text">'+f.t+'</span><span class="fi-time">'+f.tm+'</span></div>';
+    });
+    document.getElementById('feed').innerHTML=h;
+  }
+  renderFeed();
+
+  function addFeed(icon,text){
+    feed.forEach(function(f){
+      if(f.tm==='just now')f.tm='1 min ago';
+      else if(f.tm==='1 min ago')f.tm='2 min ago';
+      else if(f.tm==='2 min ago')f.tm='3 min ago';
+      f.o=true;
+    });
+    feed.unshift({i:icon,t:text,tm:'just now',o:false});
+    if(feed.length>7)feed.pop();
+    renderFeed();
+  }
+
+  /* ═══ ANIMATION ═══ */
+  var A={
+    b1:{wps:WP.b1_deliver,wi:0,p:0,on:true},
+    b2:{wps:WP.b2_pickup,wi:0,p:0,on:true},
+    b3:{wps:WP.b3_return,wi:0,p:0,on:true},
+    b4:{wps:[HUB],wi:0,p:0,on:false},
+    b5:{wps:WP.b5_deliver,wi:0,p:0,on:true}
+  };
+
+  function dist(a,b){return Math.sqrt((a[0]-b[0])*(a[0]-b[0])+(a[1]-b[1])*(a[1]-b[1]))}
+  function lerp(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]}
+  function seg(a,b){return Math.max(450,(dist(a,b)/0.001)*1500)}
+
+  function move(id){
+    var a=A[id];
+    if(!a.on||a.wi>=a.wps.length-1)return false;
+    var fr=a.wps[a.wi],to=a.wps[a.wi+1];
+    a.p+=TICK/seg(fr,to);
+    if(a.p>=1){
+      a.wi++;a.p=0;
+      if(routes[id]){var r=a.wps.slice(a.wi);routes[id].setLatLngs(r.length>1?r:[])}
+      if(a.wi>=a.wps.length-1){markers[id].setLatLng(a.wps[a.wps.length-1]);a.on=false;return true}
+    }
+    var pos=lerp(a.wps[Math.min(a.wi,a.wps.length-1)],a.wps[Math.min(a.wi+1,a.wps.length-1)],Math.min(a.p,1));
+    markers[id].setLatLng(pos);
+    return false;
+  }
+
+  function setR(id,wps){
+    A[id].wps=wps;A[id].wi=0;A[id].p=0;A[id].on=true;
+    if(routes[id])routes[id].setLatLngs(wps);
+    else routes[id]=L.polyline(wps,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+  }
+  function rmDest(id){if(dests[id]){map.removeLayer(dests[id]);delete dests[id]}}
+  function addDest(id,pos){dests[id]=L.marker(pos,{icon:destIcon()}).addTo(map)}
+
+  /* ═══ MAIN LOOP ═══ */
+  var el=0, ev={};
+
+  function tick(){
+    el+=TICK;
+
+    /* Bot 5 → delivers keys ~4s, then picks up nearby */
+    if(A.b5.on){if(move('b5')&&!ev.b5a){
+      ev.b5a=true; popDot('b5');
+      B[4].status='Delivered ✓';B[4].badge='b-delivered';B[4].task='Keys delivered — West Village H';
+      B[4].dotCls='';B[4].ringCls='';
+      upBot(B[4]); addFeed('📦','Keys delivered — West Village H'); rmDest('b5');
+      setTimeout(function(){
+        B[4].status='Picking Up';B[4].badge='b-picking-up';B[4].task='New pickup nearby — Int\'l Village';
+        upBot(B[4]); setR('b5',WP.b5_newpickup);
+        addDest('b5',WP.b5_newpickup[WP.b5_newpickup.length-1]);
+        addFeed('🤖','D5 assigned nearby pickup — smart routing');
+      },2800);
+    }} else if(ev.b5a) move('b5');
+
+    /* Bot 2 → picks up at Snell ~9s, delivers to Marino, awaits receiver, unlocked */
+    if(A.b2.on){if(move('b2')&&!ev.b2a){
+      ev.b2a=true; popDot('b2');
+      B[1].status='Picked Up';B[1].badge='b-delivering';B[1].task='Delivering Textbook → Marino';
+      upBot(B[1]); addFeed('📦','Textbook picked up — Snell Library'); rmDest('b2');
+      setTimeout(function(){
+        B[1].status='Delivering';B[1].badge='b-delivering';
+        upBot(B[1]); setR('b2',WP.b2_deliver);
+        addDest('b2',WP.b2_deliver[WP.b2_deliver.length-1]);
+      },2500);
+    }} else if(ev.b2a&&A.b2.on) {
+      if(move('b2')&&!ev.b2b){
+        ev.b2b=true; popDot('b2');
+        B[1].status='Awaiting';B[1].badge='b-awaiting';B[1].task='Waiting for receiver — Marino';
+        upBot(B[1]); rmDest('b2');
+        if(routes.b2)routes.b2.setLatLngs([]);
+        setTimeout(function(){
+          B[1].status='Unlocked ✓';B[1].badge='b-unlocked';B[1].task='Compartment opened — Textbook received';
+          upBot(B[1]); addFeed('🔓','Compartment unlocked — Textbook received');
+        },3000);
+      }
+    } else if(ev.b2a) move('b2');
+
+    /* Bot 3 → returns to hub ~16s, starts charging */
+    if(A.b3.on){if(move('b3')&&!ev.b3a){
+      ev.b3a=true; popDot('b3');
+      B[2].status='Idle';B[2].badge='b-idle';B[2].task='Docked at Hub';
+      B[2].dotCls='muted';B[2].ringCls='muted';
+      upBot(B[2]); addFeed('🤖','Deliverizer 3 returned to Hub'); rmDest('b3');
+      if(routes.b3)routes.b3.setLatLngs([]);
+      setTimeout(function(){
+        B[2].status='Charging';B[2].badge='b-charging';B[2].task='Charging at Hub — 14%';
+        B[2].dotCls='charging';B[2].ringCls='charging';
+        upBot(B[2]); addFeed('🔋','Deliverizer 3 charging — 14%');
+      },2000);
+    }}
+
+    /* Bot 1 → delivers to Mission Hill ~22s, item stored at hub for later */
+    move('b1');
+    if(!A.b1.on&&!ev.b1a){
+      ev.b1a=true; popDot('b1');
+      B[0].status='Delivered ✓';B[0].badge='b-delivered';B[0].task='Laptop Charger — Mission Hill';
+      upBot(B[0]); addFeed('📦','Laptop Charger delivered — Mission Hill'); rmDest('b1');
+      setTimeout(function(){
+        B[0].status='Returning';B[0].badge='b-returning';B[0].task='Returning to Hub';
+        B[0].dotCls='';B[0].ringCls='';
+        upBot(B[0]); setR('b1',WP.b1_return);
+      },2500);
+    }
+    if(ev.b1a&&A.b1.on)move('b1');
+
+    /* Bot 4 → finishes charging ~25s, picks up stored item from Hub */
+    if(el>=25000&&!ev.b4a){
+      ev.b4a=true;
+      B[3].status='Charged ✓';B[3].badge='b-delivered';B[3].task='Fully charged — ready';
+      B[3].dotCls='';B[3].ringCls='';
+      upBot(B[3]); addFeed('🔋','Deliverizer 4 fully charged');
+      setTimeout(function(){
+        B[3].status='Assigned';B[3].badge='b-assigned';B[3].task='Hub pickup → Int\'l Village';
+        upBot(B[3]); addFeed('📦','Stored item assigned — D4 dispatched from Hub');
+        setR('b4',WP.b4_from_hub);
+        addDest('b4',WP.b4_from_hub[WP.b4_from_hub.length-1]);
+      },1800);
+    }
+    if(ev.b4a)move('b4');
+
+    /* ═══ LOOP RESET ═══ */
+    if(el>=LOOP){
+      el=0;ev={};
+
+      B[0].status='Delivering';B[0].badge='b-delivering';B[0].task='Laptop Charger → Mission Hill';B[0].dotCls='';B[0].ringCls='';
+      B[1].status='Picking Up';B[1].badge='b-picking-up';B[1].task='Textbook from Snell Library';B[1].dotCls='';B[1].ringCls='';
+      B[2].status='Returning';B[2].badge='b-returning';B[2].task='Returning to Hub';B[2].dotCls='';B[2].ringCls='';
+      B[3].status='Charging';B[3].badge='b-charging';B[3].task='Charging at Hub — 91%';B[3].dotCls='charging';B[3].ringCls='charging';
+      B[4].status='Delivering';B[4].badge='b-delivering';B[4].task='Keys → West Village';B[4].dotCls='';B[4].ringCls='';
+
+      A.b1={wps:WP.b1_deliver,wi:0,p:0,on:true};
+      A.b2={wps:WP.b2_pickup,wi:0,p:0,on:true};
+      A.b3={wps:WP.b3_return,wi:0,p:0,on:true};
+      A.b4={wps:[HUB],wi:0,p:0,on:false};
+      A.b5={wps:WP.b5_deliver,wi:0,p:0,on:true};
+
+      B.forEach(function(b){
+        markers[b.id].setLatLng(initPos[b.id]);
+        markers[b.id].setIcon(botIcon(b));
+      });
+
+      Object.keys(routes).forEach(function(id){map.removeLayer(routes[id]);delete routes[id]});
+      routes.b1=L.polyline(WP.b1_deliver,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+      routes.b2=L.polyline(WP.b2_pickup,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+      routes.b3=L.polyline(WP.b3_return,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+      routes.b5=L.polyline(WP.b5_deliver,{color:'#5B9BD5',weight:2.5,opacity:.4,dashArray:'7,9',lineCap:'round'}).addTo(map);
+
+      Object.keys(dests).forEach(function(id){map.removeLayer(dests[id]);delete dests[id]});
+      Object.keys(initDest).forEach(function(id){dests[id]=L.marker(initDest[id],{icon:destIcon()}).addTo(map)});
+
+      feed=[
+        {i:'📦',t:'Notebook delivered — Stetson East',tm:'5 min ago',o:true},
+        {i:'🔓',t:'Compartment unlocked — Hoodie received',tm:'6 min ago',o:true},
+        {i:'🔋',t:'Deliverizer 2 fully charged',tm:'8 min ago',o:true},
+        {i:'📦',t:'Phone Charger stored at Hub — pickup 2:30 PM',tm:'10 min ago',o:true}
+      ];
+      renderFeed();renderCards();
+    }
+  }
+
+  setTimeout(function(){setInterval(tick,TICK)},2000);
+});
+</script>
+</body>
+</html>
