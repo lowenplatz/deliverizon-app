@@ -3,31 +3,35 @@ import { useNavigate } from "react-router-dom";
 
 const JUDGES = [
   // Verizon
-  { id: "suzanne_s", name: "Suzanne S." },
-  { id: "paul_su",   name: "Paul S." },
-  { id: "adam_t",    name: "Adam T." },
-  { id: "sudhir_k",  name: "Sudhir K." },
-  { id: "ed_r",      name: "Ed R." },
-  { id: "mirela_m",  name: "Mirela M." },
-  { id: "michael_r", name: "Michael R." },
-  { id: "tom_c",     name: "Tom C." },
+  { id: "suzanne_s",   name: "Suzanne S.",   zone: "alumni"       },
+  { id: "paul_su",     name: "Paul S.",      zone: "shillman"     },
+  { id: "adam_t",      name: "Adam T.",      zone: "curry"        },
+  { id: "sudhir_k",    name: "Sudhir K.",    zone: "isec"         },
+  { id: "ed_r",        name: "Ed R.",        zone: "snell"        },
+  { id: "mirela_m",    name: "Mirela M.",    zone: "ell"          },
+  { id: "michael_r",   name: "Michael R.",   zone: "curry"        },
+  { id: "tom_c",       name: "Tom C.",       zone: "forsyth"      },
   // Northeastern
-  { id: "elizabeth_z", name: "Elizabeth Z." },
-  { id: "christine_b", name: "Christine B." },
-  { id: "elizabeth_m", name: "Elizabeth M." },
-  { id: "kal_b",       name: "Kal B." },
+  { id: "elizabeth_z", name: "Elizabeth Z.", zone: "marino"       },
+  { id: "christine_b", name: "Christine B.", zone: "west_village" },
+  { id: "elizabeth_m", name: "Elizabeth M.", zone: "snell"        },
+  { id: "kal_b",       name: "Kal B.",       zone: "isec"         },
 ];
 
 const ZONES = [
-  { id: "snell", name: "Snell Library", x: 420, y: 195 },
-  { id: "isec", name: "ISEC", x: 105, y: 340 },
-  { id: "curry", name: "Curry Student Center", x: 330, y: 145 },
-  { id: "ell", name: "ELL Hall", x: 370, y: 55 },
-  { id: "marino", name: "Marino Center", x: 240, y: 38 },
-  { id: "richards", name: "Richards Hall", x: 560, y: 270 },
-  { id: "forsyth", name: "Forsyth Building", x: 360, y: 385 },
-  { id: "west_village", name: "West Village H", x: 68, y: 300 },
-  { id: "shillman", name: "Shillman Hall", x: 495, y: 145 },
+  { id: "snell",        name: "Snell Library",        x: 380, y: 388 },
+  { id: "isec",         name: "ISEC",                 x: 491, y: 578 },
+  { id: "curry",        name: "Curry Student Center", x: 303, y: 314 },
+  { id: "ell",          name: "ELL Hall",              x: 348, y: 239 },
+  { id: "marino",       name: "Marino Center",         x: 218, y: 245 },
+  { id: "richards",     name: "Richards Hall",         x: 517, y: 452 },
+  { id: "forsyth",      name: "Forsyth Building",      x: 376, y: 537 },
+  { id: "west_village", name: "West Village H",        x: 110, y: 413 },
+  { id: "shillman",     name: "Shillman Hall",         x: 442, y: 302 },
+  { id: "alumni",       name: "Alumni Center",         x: 100, y: 583 },
+  { id: "burstein",     name: "Burstein Hall",         x: 171, y: 455 },
+  { id: "sheraton",     name: "Sheraton Hotel",        x: 148, y: 72  },
+  { id: "mission_hill", name: "Mission Hill",          x: 100, y: 679 },
 ];
 
 const CORRECT_CODE = "4829";
@@ -103,24 +107,99 @@ function HomeBar() {
 
 function CampusMap({ children }) {
   return (
-    <svg viewBox="0 0 630 430" style={{ width: "100%", height: "100%", display: "block" }} preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 660 860" style={{ width: "100%", height: "100%", display: "block" }} preserveAspectRatio="xMidYMid meet">
       <defs>
         <pattern id="mgrid" width="25" height="25" patternUnits="userSpaceOnUse">
-          <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#DBDDE1" strokeWidth="0.4" />
+          <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#D0D3DA" strokeWidth="0.3" />
         </pattern>
         <filter id="glow">
           <feGaussianBlur stdDeviation="2" result="b" />
           <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-      <rect width="630" height="430" fill="#ECEEF1" />
-      <rect width="630" height="430" fill="url(#mgrid)" />
-      <line x1="0" y1="110" x2="630" y2="110" stroke="#D1D5DB" strokeWidth="5" opacity="0.25" />
-      <line x1="0" y1="290" x2="630" y2="290" stroke="#D1D5DB" strokeWidth="4" opacity="0.2" />
-      <line x1="210" y1="0" x2="210" y2="430" stroke="#D1D5DB" strokeWidth="4" opacity="0.2" />
-      <line x1="450" y1="0" x2="450" y2="430" stroke="#D1D5DB" strokeWidth="4" opacity="0.2" />
-      <rect x="250" y="120" width="120" height="80" rx="10" fill="#DCE8D4" opacity="0.4" />
-      <text x="285" y="167" fill="#AAB89F" fontSize="8" fontFamily="'DM Sans',sans-serif" fontWeight="500">CENTENNIAL</text>
+
+      {/* Base */}
+      <rect width="660" height="860" fill="#E6E8ED" />
+      <rect width="660" height="860" fill="url(#mgrid)" />
+
+      {/* Off-campus tint — north of Huntington and south of Columbus */}
+      <rect x="0" y="0" width="660" height="216" fill="#EDEEF3" opacity="0.85" />
+      <rect x="0" y="635" width="660" height="225" fill="#EDEEF3" opacity="0.85" />
+
+      {/* === GREEN SPACES === */}
+      {/* Centennial Common */}
+      <rect x="265" y="312" width="128" height="74" rx="7" fill="#C2D8A8" opacity="0.72" />
+      <text x="279" y="353" fill="#88AC6C" fontSize="7" fontWeight="700" fontFamily="'DM Sans',sans-serif" letterSpacing="0.3">CENTENNIAL COMMON</text>
+      {/* Krentzman Quad */}
+      <rect x="338" y="290" width="66" height="44" rx="4" fill="#C6DCA8" opacity="0.55" />
+      {/* West Village green pocket */}
+      <rect x="86" y="355" width="55" height="38" rx="4" fill="#C6DCA8" opacity="0.5" />
+      {/* Athletics field beside Alumni Center */}
+      <rect x="52" y="430" width="100" height="118" rx="5" fill="#BEDDA8" opacity="0.62" />
+      <text x="68" y="492" fill="#7AAC60" fontSize="7" fontWeight="600" fontFamily="'DM Sans',sans-serif">ATHLETICS</text>
+      {/* Mission Hill greenery */}
+      <rect x="68" y="648" width="220" height="82" rx="4" fill="#C2D4A4" opacity="0.38" />
+
+      {/* === ROADS === */}
+      {/* Huntington Ave — slightly diagonal (NE direction) */}
+      <polygon points="0,214 660,202 660,226 0,238" fill="#B6B9C6" />
+      <line x1="0" y1="226" x2="660" y2="214" stroke="rgba(255,255,255,0.42)" strokeWidth="1.5" strokeDasharray="15 10" />
+      <text x="10" y="211" fill="#888FA2" fontSize="7.5" fontWeight="700" fontFamily="'DM Sans',sans-serif" letterSpacing="0.2">Huntington Ave</text>
+
+      {/* Columbus Ave */}
+      <rect x="0" y="634" width="660" height="21" fill="#B6B9C6" />
+      <line x1="0" y1="644" x2="660" y2="644" stroke="rgba(255,255,255,0.42)" strokeWidth="1.5" strokeDasharray="15 10" />
+      <text x="10" y="631" fill="#888FA2" fontSize="7.5" fontWeight="700" fontFamily="'DM Sans',sans-serif" letterSpacing="0.2">Columbus Ave</text>
+
+      {/* Ruggles St — west vertical */}
+      <rect x="77" y="225" width="13" height="410" fill="#C0C3CE" />
+      {/* Leon / Forsyth St — east vertical */}
+      <rect x="566" y="204" width="13" height="432" fill="#C0C3CE" />
+      {/* Internal east-west campus path */}
+      <rect x="90" y="366" width="478" height="6" fill="#C8CBCF" opacity="0.5" />
+
+      {/* === BUILDINGS — Academic / Institutional === */}
+      {/* Snell Library */}
+      <rect x="334" y="357" width="93" height="62" rx="4" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* Curry Student Center */}
+      <rect x="263" y="288" width="80" height="52" rx="4" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* ELL Hall */}
+      <rect x="314" y="218" width="68" height="42" rx="3" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* Shillman Hall */}
+      <rect x="406" y="276" width="72" height="52" rx="3" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* Richards Hall */}
+      <rect x="476" y="419" width="82" height="66" rx="4" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* Forsyth Building */}
+      <rect x="333" y="509" width="86" height="56" rx="3" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* ISEC */}
+      <rect x="445" y="545" width="93" height="66" rx="4" fill="#C8CEDC" stroke="#B0B6CA" strokeWidth="0.8" />
+      {/* Marino Center */}
+      <rect x="174" y="217" width="88" height="56" rx="4" fill="#C6D2C0" stroke="#AEBEAA" strokeWidth="0.8" />
+      {/* Matthews / Cabot Arena area */}
+      <rect x="147" y="304" width="90" height="72" rx="5" fill="#C6D2C0" stroke="#AEBEAA" strokeWidth="0.8" />
+
+      {/* === BUILDINGS — Residential === */}
+      {/* West Village H */}
+      <rect x="86" y="385" width="48" height="56" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" />
+      {/* West Village A */}
+      <rect x="86" y="445" width="48" height="52" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" />
+      {/* Burstein Hall */}
+      <rect x="140" y="432" width="62" height="46" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" />
+
+      {/* === BUILDINGS — Extended Campus === */}
+      {/* Alumni Center */}
+      <rect x="50" y="544" width="100" height="78" rx="4" fill="#C6D2C0" stroke="#AEBEAA" strokeWidth="0.8" />
+      {/* Sheraton Hotel (north of campus) */}
+      <rect x="106" y="43" width="84" height="58" rx="4" fill="#D4D0CA" stroke="#BEBAB4" strokeWidth="0.8" />
+      {/* Mission Hill housing */}
+      <rect x="72" y="658" width="56" height="42" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" opacity="0.78" />
+      <rect x="133" y="663" width="48" height="38" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" opacity="0.72" />
+      <rect x="185" y="653" width="54" height="44" rx="3" fill="#D0CCC6" stroke="#B8B4B0" strokeWidth="0.8" opacity="0.68" />
+
+      {/* Deliverizon Hub marker */}
+      <rect x="343" y="342" width="36" height="24" rx="4" fill="#880000" opacity="0.9" />
+      <text x="361" y="358" textAnchor="middle" fill="#FFF" fontSize="7" fontWeight="800" fontFamily="'DM Sans',sans-serif" letterSpacing="0.4">HUB</text>
+
       {children}
     </svg>
   );
@@ -193,7 +272,7 @@ export default function App() {
   const senderZone = pickupZone ? ZONES.find(z => z.id === pickupZone) : ZONES.find(z => z.id === "snell");
   const receiverZone = dropoffZone ? ZONES.find(z => z.id === dropoffZone) : ZONES.find(z => z.id === "west_village");
 
-  const s3Waypoints = senderZone ? getWaypoints({ x: 290, y: 340 }, senderZone) : [];
+  const s3Waypoints = senderZone ? getWaypoints({ x: 361, y: 354 }, senderZone) : [];
   useEffect(() => {
     if (screen !== 3 || s3Arrived) return;
     const iv = setInterval(() => {
@@ -202,7 +281,7 @@ export default function App() {
     return () => clearInterval(iv);
   }, [screen, s3Arrived]);
 
-  const s4Waypoints = receiverZone ? getWaypoints({ x: 290, y: 180 }, receiverZone) : [];
+  const s4Waypoints = receiverZone ? getWaypoints({ x: 361, y: 354 }, receiverZone) : [];
   useEffect(() => {
     if (screen !== 4 || s4Arrived) return;
     const iv = setInterval(() => {
@@ -467,7 +546,7 @@ export default function App() {
               {/* Choice buttons */}
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}>
                 <button
-                  onClick={() => { setRecipientChoice("now"); setDropoffZone("west_village"); }}
+                  onClick={() => { setRecipientChoice("now"); setDropoffZone(recipient?.zone || "west_village"); }}
                   style={{
                     padding: "18px", borderRadius: 18,
                     border: recipientChoice === "now" ? "2px solid #EE0000" : "2px solid #F3F4F6",
@@ -478,7 +557,7 @@ export default function App() {
                   <div style={{ width: 46, height: 46, borderRadius: 14, background: recipientChoice === "now" ? "#EE0000" : "#E5E7EB", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, transition: "background 0.15s", flexShrink: 0 }}>📍</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#1A1A1A" }}>Receive Now</div>
-                    <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>Deliver to your location: West Village H</div>
+                    <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>Deliver to your location: {ZONES.find(z => z.id === (recipient?.zone || "west_village"))?.name}</div>
                   </div>
                 </button>
                 <button
@@ -502,7 +581,7 @@ export default function App() {
               {recipientChoice === "now" && (
                 <div style={{ background: "#FFF5F5", borderRadius: 12, padding: "12px 14px", display: "flex", alignItems: "center", gap: 8, animation: "fade-up 0.2s ease-out" }}>
                   <span style={{ fontSize: 14 }}>📍</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#EE0000" }}>Delivering to West Village H</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#EE0000" }}>Delivering to {ZONES.find(z => z.id === (recipient?.zone || "west_village"))?.name}</span>
                 </div>
               )}
               {recipientChoice === "later" && (
