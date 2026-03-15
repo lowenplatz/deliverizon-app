@@ -60,6 +60,7 @@ export default function Hub() {
         {/* Cards */}
         <div style={{
           display: "flex", gap: 28, animation: "fade-up 0.6s ease-out 0.15s both",
+          flexWrap: "wrap", justifyContent: "center",
         }}>
           {/* Card 1: Try a Delivery */}
           <div
@@ -138,39 +139,26 @@ export default function Hub() {
             }}>
               {/* Decorative map dots */}
               <svg viewBox="0 0 200 120" width="200" height="120">
-                {/* Grid lines */}
                 <line x1="0" y1="40" x2="200" y2="40" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
                 <line x1="0" y1="80" x2="200" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
                 <line x1="60" y1="0" x2="60" y2="120" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
                 <line x1="140" y1="0" x2="140" y2="120" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-
-                {/* Route */}
                 <polyline points="40,90 70,60 110,45 150,35" fill="none" stroke="#3B82F6" strokeWidth="2" strokeDasharray="4 3" opacity="0.5" />
-
-                {/* Zones */}
                 <circle cx="40" cy="90" r="5" fill="#EE0000" opacity="0.7" />
                 <circle cx="100" cy="55" r="4" fill="rgba(255,255,255,0.3)" />
                 <circle cx="150" cy="35" r="5" fill="#8B5CF6" opacity="0.7" />
                 <circle cx="60" cy="40" r="3" fill="rgba(255,255,255,0.2)" />
                 <circle cx="170" cy="80" r="3" fill="rgba(255,255,255,0.2)" />
-
-                {/* Bots */}
                 <circle cx="70" cy="60" r="6" fill="#3B82F6" stroke="#FFF" strokeWidth="1.5" opacity="0.9" />
                 <circle cx="130" cy="70" r="6" fill="#10B981" stroke="#FFF" strokeWidth="1.5" opacity="0.9" />
               </svg>
-
-              {/* Signal rings */}
               <div style={{
                 position: "absolute", top: 15, right: 25,
                 width: 40, height: 40, borderRadius: "50%",
                 border: "1.5px solid rgba(59,130,246,0.2)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: "50%",
-                  border: "1.5px solid rgba(59,130,246,0.3)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
+                <div style={{ width: 24, height: 24, borderRadius: "50%", border: "1.5px solid rgba(59,130,246,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3B82F6" }} />
                 </div>
               </div>
@@ -193,6 +181,75 @@ export default function Hub() {
               </div>
             </div>
           </div>
+
+          {/* Card 3: Fleet Operations Dashboard */}
+          <div
+            className="hub-card"
+            onClick={() => navigate("/dashboard")}
+            style={{
+              width: 420, borderRadius: 24, background: "#141414",
+              border: "1px solid rgba(255,255,255,0.08)",
+              overflow: "hidden",
+            }}
+          >
+            {/* Card visual */}
+            <div style={{
+              height: 200, background: "linear-gradient(135deg, #0A1628 0%, #0D2137 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative", overflow: "hidden", padding: "16px 24px",
+            }}>
+              {/* Mini dashboard preview */}
+              <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
+                {/* Stat row */}
+                <div style={{ display: "flex", gap: 8 }}>
+                  {[
+                    { label: "Active Bots", value: "3", color: "#10B981" },
+                    { label: "Deliveries", value: "23", color: "#3B82F6" },
+                    { label: "Charging", value: "1", color: "#F59E0B" },
+                  ].map(s => (
+                    <div key={s.label} style={{ flex: 1, background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "8px 10px" }}>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.value}</div>
+                      <div style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", fontWeight: 600, marginTop: 1 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Bot status bars */}
+                {[
+                  { name: "Bot 1", status: "DELIVERING", color: "#EE0000", w: "75%" },
+                  { name: "Bot 2", status: "EN ROUTE",   color: "#3B82F6", w: "50%" },
+                  { name: "Bot 3", status: "RETURNING",  color: "#3B82F6", w: "30%" },
+                  { name: "Bot 4", status: "CHARGING",   color: "#F59E0B", w: "100%" },
+                ].map(b => (
+                  <div key={b.name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.5)", width: 28 }}>{b.name}</div>
+                    <div style={{ flex: 1, height: 14, background: "rgba(255,255,255,0.06)", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: b.w, height: "100%", background: b.color, borderRadius: 4, display: "flex", alignItems: "center", paddingLeft: 6, transition: "width 1s" }}>
+                        <span style={{ fontSize: 6, fontWeight: 700, color: "#FFF", letterSpacing: "0.3px" }}>{b.status}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Card text */}
+            <div style={{ padding: "24px 28px 28px" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#FFFFFF", marginBottom: 8 }}>
+                Operations Dashboard
+              </div>
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
+                Live fleet status, bot positions, delivery activity feed
+              </div>
+              <div style={{
+                marginTop: 18, display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "10px 20px", borderRadius: 12, background: "#10B981",
+                color: "#FFF", fontSize: 13, fontWeight: 700,
+              }}>
+                Launch Dashboard →
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Footer */}
