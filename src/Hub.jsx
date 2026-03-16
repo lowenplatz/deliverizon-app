@@ -182,6 +182,64 @@ export default function Hub() {
             </div>
           </div>
 
+          {/* Card 3: Edge Cases */}
+          <div
+            className="hub-card"
+            onClick={() => navigate("/edge-cases")}
+            style={{
+              width: 420, borderRadius: 24, background: "#141414",
+              border: "1px solid rgba(255,255,255,0.08)",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{
+              height: 200, background: "linear-gradient(135deg, #1A0F0F 0%, #2D1515 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative", overflow: "hidden", padding: "16px 24px",
+            }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+                {[
+                  { label: "5G signal drops",  sev: "#E24B4A", w: "60%" },
+                  { label: "Bot tipped over",  sev: "#E24B4A", w: "75%" },
+                  { label: "Battery dying",    sev: "#BA7517", w: "45%" },
+                  { label: "Bot kidnapped",    sev: "#E24B4A", w: "55%" },
+                ].map(s => (
+                  <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: s.sev, flexShrink: 0 }} />
+                    <div style={{ flex: 1, height: 10, background: "rgba(255,255,255,0.05)", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: s.w, height: "100%", background: `${s.sev}33`, borderRadius: 4, borderLeft: `2px solid ${s.sev}` }} />
+                    </div>
+                    <span style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", fontWeight: 600, width: 90, flexShrink: 0 }}>{s.label}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{
+                position: "absolute", top: 16, right: 20, width: 36, height: 36, borderRadius: "50%",
+                background: "rgba(226,75,74,0.12)", border: "1px solid rgba(226,75,74,0.25)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 2L3 5v4c0 3.5 2.5 6.5 6 7.5C12.5 15.5 15 12.5 15 9V5L9 2z" stroke="#E24B4A" strokeWidth="1.3" fill="none"/>
+                  <line x1="6" y1="9" x2="8" y2="11" stroke="#E24B4A" strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="8" y1="11" x2="12" y2="7" stroke="#E24B4A" strokeWidth="1.3" strokeLinecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div style={{ padding: "24px 28px 28px" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#FFFFFF", marginBottom: 8 }}>Edge Cases</div>
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
+                How Deliverizon handles real-world failures — signal drops, tipped bots, and more
+              </div>
+              <div style={{
+                marginTop: 18, display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "10px 20px", borderRadius: 12, background: "#E24B4A",
+                color: "#FFF", fontSize: 13, fontWeight: 700,
+              }}>
+                View Scenarios →
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Footer */}
