@@ -93,12 +93,12 @@ function FleetMap({req,elapsed}){
       <rect width="630" height="820" fill="url(#fgrid)"/>
       <rect x="295" y="335" width="80" height="48" rx="7" fill="#C8DEAD" opacity="0.65"/>
       <line x1="0" y1="375" x2="630" y2="373" stroke="#B0B4C2" strokeWidth="3"/>
-      <text x="8" y="370" fill="#9098B0" fontSize="7" fontWeight="700" fontFamily="'DM Sans',sans-serif">Huntington Ave</text>
+      <text x="8" y="370" fill="#9098B0" fontSize="12" fontWeight="700" fontFamily="'DM Sans',sans-serif">Huntington Ave</text>
       <line x1="0" y1="470" x2="630" y2="470" stroke="#B0B4C2" strokeWidth="3"/>
-      <text x="8" y="466" fill="#9098B0" fontSize="7" fontWeight="700" fontFamily="'DM Sans',sans-serif">Columbus Ave</text>
+      <text x="8" y="466" fill="#9098B0" fontSize="12" fontWeight="700" fontFamily="'DM Sans',sans-serif">Columbus Ave</text>
       <line x1="133" y1="200" x2="133" y2="650" stroke="#B0B4C2" strokeWidth="2" opacity="0.4"/>
       <rect x="244" y="412" width="32" height="18" rx="4" fill="#880000" opacity="0.85"/>
-      <text x="260" y="424" textAnchor="middle" fill="#FFF" fontSize="7" fontWeight="800" fontFamily="'DM Sans',sans-serif" letterSpacing="0.5">HUB</text>
+      <text x="260" y="424" textAnchor="middle" fill="#FFF" fontSize="12" fontWeight="800" fontFamily="'DM Sans',sans-serif" letterSpacing="0.5">HUB</text>
       {MAP_ZONES.map(z=>{
         const isFrom=z.id===req.fromZone,isTo=z.id===req.toZone,active=isFrom||isTo;
         return(<g key={z.id}>
@@ -114,15 +114,15 @@ function FleetMap({req,elapsed}){
       {Object.entries(BOT_HOMES).filter(([id])=>id!==req.winBot).map(([id,pos])=>(
         <g key={id} opacity="0.35">
           <circle cx={pos.x} cy={pos.y} r={11} fill={BOT_COLORS[id]} stroke="#FFF" strokeWidth="1.5"/>
-          <text x={pos.x} y={pos.y+3.5} textAnchor="middle" fill="#FFF" fontSize="7" fontWeight="800" fontFamily="'DM Sans',sans-serif">{id}</text>
+          <text x={pos.x} y={pos.y+3.5} textAnchor="middle" fill="#FFF" fontSize="12" fontWeight="800" fontFamily="'DM Sans',sans-serif">{id}</text>
         </g>
       ))}
       <g filter="url(#fglow)">
         <circle cx={botPos.x} cy={botPos.y} r={12} fill={winColor} opacity="0.15"><animate attributeName="r" values="10;20;10" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.25;0.04;0.25" dur="1.4s" repeatCount="indefinite"/></circle>
         <circle cx={botPos.x} cy={botPos.y} r={atSender||delivered?13:11} fill={delivered?"#10B981":winColor} stroke="#FFF" strokeWidth="2.5" style={{transition:"fill 0.4s"}}/>
-        <text x={botPos.x} y={botPos.y+3.5} textAnchor="middle" fill="#FFF" fontSize="7.5" fontWeight="800" fontFamily="'DM Sans',sans-serif">{delivered?"✓":req.winBot}</text>
+        <text x={botPos.x} y={botPos.y+3.5} textAnchor="middle" fill="#FFF" fontSize="12" fontWeight="800" fontFamily="'DM Sans',sans-serif">{delivered?"✓":req.winBot}</text>
       </g>
-      <text x="606" y="26" textAnchor="middle" fill="#9CA3AF" fontSize="9" fontWeight="700" fontFamily="'DM Sans',sans-serif">N</text>
+      <text x="606" y="26" textAnchor="middle" fill="#9CA3AF" fontSize="13" fontWeight="700" fontFamily="'DM Sans',sans-serif">N</text>
       <line x1="606" y1="30" x2="606" y2="44" stroke="#9CA3AF" strokeWidth="1.2"/>
       <polygon points="606,30 603,40 606,37 609,40" fill="#9CA3AF"/>
     </svg>
@@ -134,8 +134,8 @@ const TAG_STYLES={match:{bg:"#D1FAE5",color:"#065F46",label:"MATCH"},far:{bg:"#F
 function Factor({label,good,visible}){
   return(
     <div style={{display:"flex",alignItems:"center",gap:3}}>
-      <div style={{width:16,height:16,borderRadius:"50%",background:!visible?"#E5E7EB":good?"#10B981":"#EF4444",display:"flex",alignItems:"center",justifyContent:"center",transition:"background 0.3s, transform 0.2s",transform:visible?"scale(1.08)":"scale(1)",fontSize:8,color:"#FFF",fontWeight:700}}>{visible?(good?"✓":"✗"):""}</div>
-      <span style={{fontSize:8,color:"#9CA3AF",fontWeight:600}}>{label}</span>
+      <div style={{width:16,height:16,borderRadius:"50%",background:!visible?"#E5E7EB":good?"#10B981":"#EF4444",display:"flex",alignItems:"center",justifyContent:"center",transition:"background 0.3s, transform 0.2s",transform:visible?"scale(1.08)":"scale(1)",fontSize:13,color:"#FFF",fontWeight:700}}>{visible?(good?"✓":"✗"):""}</div>
+      <span style={{fontSize:13,color:"#9CA3AF",fontWeight:600}}>{label}</span>
     </div>
   );
 }
@@ -146,28 +146,28 @@ function EvalPanel({req,elapsed}){
     <div style={{width:380,flexShrink:0,display:"flex",flexDirection:"column",background:"#FFF",borderRight:"1px solid #F0F0F0",height:"100%",overflow:"hidden"}}>
       <div style={{padding:"16px 20px 12px",borderBottom:"1px solid #F3F4F6",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
-          <div style={{width:32,height:32,borderRadius:8,background:"#EE0000",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🤖</div>
+          <div style={{width:32,height:32,borderRadius:8,background:"#EE0000",display:"flex",alignItems:"center",justifyContent:"center",fontSize:21}}>🤖</div>
           <div>
-            <div style={{fontSize:14,fontWeight:800,color:"#1A1A1A"}}>MEC Bot Selection</div>
-            <div style={{fontSize:9,color:"#3B82F6",fontWeight:700,letterSpacing:"0.6px"}}>VERIZON 5G EDGE · REAL-TIME</div>
+            <div style={{fontSize:18,fontWeight:800,color:"#1A1A1A"}}>MEC Bot Selection</div>
+            <div style={{fontSize:13,color:"#3B82F6",fontWeight:700,letterSpacing:"0.6px"}}>VERIZON 5G EDGE · REAL-TIME</div>
           </div>
-          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5,fontSize:10,color:"#6B7280",fontWeight:600}}>
+          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5,fontSize:14,color:"#6B7280",fontWeight:600}}>
             <div style={{width:6,height:6,borderRadius:"50%",background:"#10B981",animation:"pulse-g 2s infinite"}}/>LIVE
           </div>
         </div>
-        <div style={{fontSize:10,color:"#9CA3AF",lineHeight:1.5}}>When a request arrives, the 5G MEC evaluates every nearby bot — distance, battery, capacity — and dispatches the optimal one in milliseconds.</div>
+        <div style={{fontSize:14,color:"#9CA3AF",lineHeight:1.5}}>When a request arrives, the 5G MEC evaluates every nearby bot — distance, battery, capacity — and dispatches the optimal one in milliseconds.</div>
       </div>
 
       <div style={{padding:"12px 18px 8px",flexShrink:0}}>
         {showCard?(
           <div style={{background:dispatched&&!delivered?"#EFF6FF":delivered?"#F0FDF4":"#FAFAFA",borderRadius:10,border:"1px solid #E5E7EB",borderLeft:`4px solid ${dispatched&&!delivered?"#3B82F6":delivered?"#10B981":"#3B82F6"}`,padding:"12px 14px",transition:"all 0.5s",animation:"ecIn 0.35s ease-out"}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
-              <span style={{fontSize:18}}>{req.icon}</span>
-              <span style={{fontSize:13,fontWeight:700,color:"#1A1A1A"}}>{req.item}</span>
-              {dispatched&&<span style={{marginLeft:"auto",fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:10,background:delivered?"#D1FAE5":"#DBEAFE",color:delivered?"#065F46":"#1E40AF"}}>{delivered?"DELIVERED ✓":"EN ROUTE"}</span>}
+              <span style={{fontSize:24}}>{req.icon}</span>
+              <span style={{fontSize:17,fontWeight:700,color:"#1A1A1A"}}>{req.item}</span>
+              {dispatched&&<span style={{marginLeft:"auto",fontSize:13,fontWeight:700,padding:"2px 7px",borderRadius:10,background:delivered?"#D1FAE5":"#DBEAFE",color:delivered?"#065F46":"#1E40AF"}}>{delivered?"DELIVERED ✓":"EN ROUTE"}</span>}
             </div>
-            <div style={{fontSize:10.5,color:"#6B7280",marginBottom:dispatched?6:0}}>{req.from} → {req.to}</div>
-            {dispatched&&<div style={{fontSize:10,color:"#3B82F6",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+            <div style={{fontSize:14,color:"#6B7280",marginBottom:dispatched?6:0}}>{req.from} → {req.to}</div>
+            {dispatched&&<div style={{fontSize:14,color:"#3B82F6",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
               <span>→ <strong>{req.winBot}</strong></span>
               <span style={{color:"#9CA3AF"}}>·</span><span>via 5G MEC</span>
               <span style={{color:"#9CA3AF"}}>·</span><span>{req.eta} ETA</span>
@@ -175,12 +175,12 @@ function EvalPanel({req,elapsed}){
             </div>}
           </div>
         ):(
-          <div style={{padding:"12px",textAlign:"center",color:"#D1D5DB",fontSize:11}}>Awaiting request…</div>
+          <div style={{padding:"12px",textAlign:"center",color:"#D1D5DB",fontSize:15}}>Awaiting request…</div>
         )}
       </div>
 
       <div style={{padding:"0 18px",flex:1,overflow:"hidden"}}>
-        <div style={{fontSize:8,fontWeight:700,color:"#9CA3AF",letterSpacing:"1.2px",marginBottom:6}}>BOT EVALUATION</div>
+        <div style={{fontSize:13,fontWeight:700,color:"#9CA3AF",letterSpacing:"1.2px",marginBottom:6}}>BOT EVALUATION</div>
         {req.rows.map((row,i)=>{
           const visible=elapsed>=rowT(i), isBusy=row.tag==="busy", isMatch=row.tag==="match";
           const showDist=!isBusy&&elapsed>=factorT(i,0), showBatt=!isBusy&&elapsed>=factorT(i,1);
@@ -189,9 +189,9 @@ function EvalPanel({req,elapsed}){
           return(
             <div key={row.id} style={{display:"flex",alignItems:"center",padding:"7px 8px",borderRadius:7,marginBottom:4,opacity:visible?(dimmed?0.28:1):0,transform:visible?"translateY(0)":"translateY(6px)",transition:"opacity 0.35s, transform 0.35s",background:isMatch&&showTag?"rgba(16,185,129,0.06)":"transparent"}}>
               <div style={{width:34,height:22,borderRadius:6,background:BOT_COLORS[row.id],display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginRight:8}}>
-                <span style={{fontSize:9,fontWeight:800,color:"#FFF"}}>{row.id}</span>
+                <span style={{fontSize:13,fontWeight:800,color:"#FFF"}}>{row.id}</span>
               </div>
-              {isBusy?(<span style={{fontSize:10,color:"#9CA3AF",fontStyle:"italic",flex:1}}>Busy on another delivery</span>):(
+              {isBusy?(<span style={{fontSize:14,color:"#9CA3AF",fontStyle:"italic",flex:1}}>Busy on another delivery</span>):(
                 <div style={{display:"flex",gap:8,alignItems:"center",flex:1}}>
                   <Factor label="Dist" good={row.dist} visible={showDist}/>
                   <Factor label="Batt" good={row.batt} visible={showBatt}/>
@@ -199,7 +199,7 @@ function EvalPanel({req,elapsed}){
                 </div>
               )}
               <div style={{opacity:showTag?1:0,transition:"opacity 0.3s",marginLeft:"auto",flexShrink:0}}>
-                <span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:4,background:ts.bg,color:ts.color}}>{ts.label}</span>
+                <span style={{fontSize:13,fontWeight:700,padding:"2px 7px",borderRadius:4,background:ts.bg,color:ts.color}}>{ts.label}</span>
               </div>
             </div>
           );
@@ -210,8 +210,8 @@ function EvalPanel({req,elapsed}){
         {[{v:"~14ms",l:"MEC LATENCY"},{v:"4",l:"ACTIVE BOTS"},{v:"100%",l:"UPTIME"}].map((s,i)=>(
           <div key={s.l} style={{flex:1,textAlign:"center",position:"relative"}}>
             {i>0&&<div style={{position:"absolute",left:0,top:"10%",bottom:"10%",width:1,background:"#E5E7EB"}}/>}
-            <div style={{fontSize:15,fontWeight:800,color:"#1A1A1A"}}>{s.v}</div>
-            <div style={{fontSize:7.5,color:"#9CA3AF",letterSpacing:"0.5px",fontWeight:600}}>{s.l}</div>
+            <div style={{fontSize:20,fontWeight:800,color:"#1A1A1A"}}>{s.v}</div>
+            <div style={{fontSize:12,color:"#9CA3AF",letterSpacing:"0.5px",fontWeight:600}}>{s.l}</div>
           </div>
         ))}
       </div>
@@ -254,9 +254,9 @@ const botId=()=>`D${String((_bot++%20)+1).padStart(2,"0")}`;
 function makeB2C(si=0){return{id:uid(),bot:botId(),type:"b2c",restaurant:pick(RESTAURANTS),destination:pick(ZONES_P2),si,eta:`${2+Math.floor(Math.random()*7)}m`,lat:`${10+Math.floor(Math.random()*12)}ms`,ticks:si*4,removing:false,fresh:si===0};}
 function makeP2P(si=0){const js=[...JUDGES_P2].sort(()=>Math.random()-0.5);return{id:uid(),bot:botId(),type:"p2p",from:js[0],to:js[1],item:pick(P2P_ITEMS),pickup:pick(ZONES_P2),dropoff:pick(ZONES_P2),si,eta:`${2+Math.floor(Math.random()*8)}m`,lat:`${10+Math.floor(Math.random()*12)}ms`,ticks:si*4,removing:false,fresh:si===0};}
 
-function B2CCard({d}){const st=B2C_STATUSES[Math.min(d.si,3)];return(<div style={{background:"#141414",borderRadius:14,border:"1px solid rgba(255,255,255,0.07)",borderLeft:`3px solid ${st.color}`,padding:"14px 16px",marginBottom:10,opacity:d.removing?0:1,transform:d.removing?"translateY(-6px) scale(0.98)":"translateY(0) scale(1)",transition:"opacity 0.45s ease, transform 0.45s ease",animation:d.fresh?"slideIn 0.3s ease-out":"none"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}><div style={{display:"flex",gap:12,alignItems:"center"}}><span style={{fontSize:28,lineHeight:1}}>{d.restaurant.emoji}</span><div><div style={{fontSize:13,fontWeight:700,color:"#FFF",marginBottom:2}}>{d.restaurant.name}</div><div style={{fontSize:11,color:"rgba(255,255,255,0.35)"}}>→ {d.destination}</div></div></div><span style={{fontSize:9,fontWeight:700,padding:"3px 9px",borderRadius:20,flexShrink:0,background:`${st.color}1A`,color:st.color,border:`1px solid ${st.color}44`,letterSpacing:"0.4px"}}>{st.label}</span></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontWeight:700}}>{d.bot}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:10,color:"rgba(59,130,246,0.75)",fontWeight:600}}>⚡ {d.lat} MEC</span><span style={{fontSize:10,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>ETA {d.eta}</span></div></div>);}
-function P2PCard({d}){const st=P2P_STATUSES[Math.min(d.si,3)];return(<div style={{background:"#141414",borderRadius:14,border:"1px solid rgba(255,255,255,0.07)",borderLeft:`3px solid ${st.color}`,padding:"14px 16px",marginBottom:10,opacity:d.removing?0:1,transform:d.removing?"translateY(-6px) scale(0.98)":"translateY(0) scale(1)",transition:"opacity 0.45s ease, transform 0.45s ease",animation:d.fresh?"slideIn 0.3s ease-out":"none"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:5}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(238,0,0,0.15)",border:"1px solid rgba(238,0,0,0.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#EE0000",flexShrink:0}}>{d.from[0]}</div><span style={{fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.85)"}}>{d.from}</span><span style={{fontSize:16,margin:"0 2px"}}>{d.item.emoji}</span><span style={{fontSize:12,color:"rgba(255,255,255,0.2)"}}>→</span><div style={{width:28,height:28,borderRadius:8,background:"rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"rgba(255,255,255,0.5)",flexShrink:0}}>{d.to[0]}</div><span style={{fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.85)"}}>{d.to}</span></div><div style={{fontSize:11,color:"rgba(255,255,255,0.25)"}}>{d.item.name} · {d.pickup} → {d.dropoff}</div></div><span style={{fontSize:9,fontWeight:700,padding:"3px 9px",borderRadius:20,flexShrink:0,marginLeft:10,background:`${st.color}1A`,color:st.color,border:`1px solid ${st.color}44`,letterSpacing:"0.4px"}}>{st.label}</span></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontWeight:700}}>{d.bot}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:10,color:"rgba(238,0,0,0.65)",fontWeight:600}}>⚡ {d.lat} MEC</span><span style={{fontSize:10,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>ETA {d.eta}</span></div></div>);}
-function Stat({value,label,color,small}){return(<div style={{textAlign:"center"}}><div style={{fontSize:small?20:26,fontWeight:800,color:color||"#FFF",lineHeight:1}}>{value}</div><div style={{fontSize:8,color:"rgba(255,255,255,0.28)",letterSpacing:"0.7px",fontWeight:700,marginTop:3}}>{label}</div></div>);}
+function B2CCard({d}){const st=B2C_STATUSES[Math.min(d.si,3)];return(<div style={{background:"#141414",borderRadius:14,border:"1px solid rgba(255,255,255,0.07)",borderLeft:`3px solid ${st.color}`,padding:"14px 16px",marginBottom:10,opacity:d.removing?0:1,transform:d.removing?"translateY(-6px) scale(0.98)":"translateY(0) scale(1)",transition:"opacity 0.45s ease, transform 0.45s ease",animation:d.fresh?"slideIn 0.3s ease-out":"none"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}><div style={{display:"flex",gap:12,alignItems:"center"}}><span style={{fontSize:36,lineHeight:1}}>{d.restaurant.emoji}</span><div><div style={{fontSize:17,fontWeight:700,color:"#FFF",marginBottom:2}}>{d.restaurant.name}</div><div style={{fontSize:15,color:"rgba(255,255,255,0.35)"}}>→ {d.destination}</div></div></div><span style={{fontSize:13,fontWeight:700,padding:"3px 9px",borderRadius:20,flexShrink:0,background:`${st.color}1A`,color:st.color,border:`1px solid ${st.color}44`,letterSpacing:"0.4px"}}>{st.label}</span></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:14,color:"rgba(255,255,255,0.25)",fontWeight:700}}>{d.bot}</span><span style={{fontSize:14,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:14,color:"rgba(59,130,246,0.75)",fontWeight:600}}>⚡ {d.lat} MEC</span><span style={{fontSize:14,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:14,color:"rgba(255,255,255,0.28)"}}>ETA {d.eta}</span></div></div>);}
+function P2PCard({d}){const st=P2P_STATUSES[Math.min(d.si,3)];return(<div style={{background:"#141414",borderRadius:14,border:"1px solid rgba(255,255,255,0.07)",borderLeft:`3px solid ${st.color}`,padding:"14px 16px",marginBottom:10,opacity:d.removing?0:1,transform:d.removing?"translateY(-6px) scale(0.98)":"translateY(0) scale(1)",transition:"opacity 0.45s ease, transform 0.45s ease",animation:d.fresh?"slideIn 0.3s ease-out":"none"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:5}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(238,0,0,0.15)",border:"1px solid rgba(238,0,0,0.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:800,color:"#EE0000",flexShrink:0}}>{d.from[0]}</div><span style={{fontSize:16,fontWeight:700,color:"rgba(255,255,255,0.85)"}}>{d.from}</span><span style={{fontSize:21,margin:"0 2px"}}>{d.item.emoji}</span><span style={{fontSize:16,color:"rgba(255,255,255,0.2)"}}>→</span><div style={{width:28,height:28,borderRadius:8,background:"rgba(255,255,255,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:800,color:"rgba(255,255,255,0.5)",flexShrink:0}}>{d.to[0]}</div><span style={{fontSize:16,fontWeight:700,color:"rgba(255,255,255,0.85)"}}>{d.to}</span></div><div style={{fontSize:15,color:"rgba(255,255,255,0.25)"}}>{d.item.name} · {d.pickup} → {d.dropoff}</div></div><span style={{fontSize:13,fontWeight:700,padding:"3px 9px",borderRadius:20,flexShrink:0,marginLeft:10,background:`${st.color}1A`,color:st.color,border:`1px solid ${st.color}44`,letterSpacing:"0.4px"}}>{st.label}</span></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:14,color:"rgba(255,255,255,0.25)",fontWeight:700}}>{d.bot}</span><span style={{fontSize:14,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:14,color:"rgba(238,0,0,0.65)",fontWeight:600}}>⚡ {d.lat} MEC</span><span style={{fontSize:14,color:"rgba(255,255,255,0.12)"}}>·</span><span style={{fontSize:14,color:"rgba(255,255,255,0.28)"}}>ETA {d.eta}</span></div></div>);}
+function Stat({value,label,color,small}){return(<div style={{textAlign:"center"}}><div style={{fontSize:small?20:26,fontWeight:800,color:color||"#FFF",lineHeight:1}}>{value}</div><div style={{fontSize:13,color:"rgba(255,255,255,0.28)",letterSpacing:"0.7px",fontWeight:700,marginTop:3}}>{label}</div></div>);}
 function Divider(){return <div style={{width:1,height:24,background:"rgba(255,255,255,0.07)"}}/>;}
 
 function Phase2(){
@@ -279,11 +279,11 @@ function Phase2(){
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",borderRight:"1px solid rgba(255,255,255,0.06)"}}>
         <div style={{padding:"16px 20px 12px",flexShrink:0,borderBottom:"1px solid rgba(255,255,255,0.06)",background:"rgba(59,130,246,0.04)"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
-            <div style={{width:34,height:34,borderRadius:9,background:"rgba(59,130,246,0.15)",border:"1px solid rgba(59,130,246,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17}}>🏪</div>
-            <div><div style={{fontSize:15,fontWeight:800,color:"#FFF"}}>B2C Deliveries</div><div style={{fontSize:10,color:"rgba(59,130,246,0.85)",fontWeight:700,letterSpacing:"0.6px"}}>BUSINESS TO CONSUMER</div></div>
+            <div style={{width:34,height:34,borderRadius:9,background:"rgba(59,130,246,0.15)",border:"1px solid rgba(59,130,246,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>🏪</div>
+            <div><div style={{fontSize:20,fontWeight:800,color:"#FFF"}}>B2C Deliveries</div><div style={{fontSize:14,color:"rgba(59,130,246,0.85)",fontWeight:700,letterSpacing:"0.6px"}}>BUSINESS TO CONSUMER</div></div>
             <div style={{marginLeft:"auto",width:8,height:8,borderRadius:"50%",background:"#3B82F6",animation:"pulse-blue 2s infinite"}}/>
           </div>
-          <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>{b2cList.filter(d=>!d.removing).length} active · Restaurants → Campus drop zones</div>
+          <div style={{fontSize:15,color:"rgba(255,255,255,0.28)"}}>{b2cList.filter(d=>!d.removing).length} active · Restaurants → Campus drop zones</div>
         </div>
         <div style={{flex:1,overflowY:"auto",padding:"14px 16px"}}>{b2cList.map(d=><B2CCard key={d.id} d={d}/>)}</div>
       </div>
@@ -291,10 +291,10 @@ function Phase2(){
         <Stat value={total} label="DELIVERIES TODAY" color="#FFF"/><Divider/>
         <Stat value={activeBots} label="ACTIVE BOTS" color="#FFF"/><Divider/>
         <div style={{background:"rgba(238,0,0,0.1)",border:"1px solid rgba(238,0,0,0.28)",borderRadius:14,padding:"12px 14px",textAlign:"center",width:"100%"}}>
-          <div style={{fontSize:9,color:"#EE0000",fontWeight:800,letterSpacing:"0.6px"}}>VERIZON</div>
-          <div style={{fontSize:9,color:"#EE0000",fontWeight:800,letterSpacing:"0.6px",marginBottom:6}}>5G MEC</div>
+          <div style={{fontSize:13,color:"#EE0000",fontWeight:800,letterSpacing:"0.6px"}}>VERIZON</div>
+          <div style={{fontSize:13,color:"#EE0000",fontWeight:800,letterSpacing:"0.6px",marginBottom:6}}>5G MEC</div>
           <div style={{width:8,height:8,borderRadius:"50%",background:"#10B981",margin:"0 auto 4px",animation:"pulse-green 2s infinite"}}/>
-          <div style={{fontSize:8,color:"#10B981",fontWeight:700,letterSpacing:"0.4px"}}>ACTIVE</div>
+          <div style={{fontSize:13,color:"#10B981",fontWeight:700,letterSpacing:"0.4px"}}>ACTIVE</div>
         </div>
         <Divider/><Stat value="~14ms" label="AVG MEC LATENCY" color="#3B82F6" small/><Divider/>
         <Stat value="2" label="CAMPUSES" color="#FFF"/>
@@ -302,11 +302,11 @@ function Phase2(){
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         <div style={{padding:"16px 20px 12px",flexShrink:0,borderBottom:"1px solid rgba(255,255,255,0.06)",background:"rgba(238,0,0,0.04)"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
-            <div style={{width:34,height:34,borderRadius:9,background:"rgba(238,0,0,0.15)",border:"1px solid rgba(238,0,0,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17}}>👤</div>
-            <div><div style={{fontSize:15,fontWeight:800,color:"#FFF"}}>P2P Deliveries</div><div style={{fontSize:10,color:"rgba(238,0,0,0.85)",fontWeight:700,letterSpacing:"0.6px"}}>PEER TO PEER</div></div>
+            <div style={{width:34,height:34,borderRadius:9,background:"rgba(238,0,0,0.15)",border:"1px solid rgba(238,0,0,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>👤</div>
+            <div><div style={{fontSize:20,fontWeight:800,color:"#FFF"}}>P2P Deliveries</div><div style={{fontSize:14,color:"rgba(238,0,0,0.85)",fontWeight:700,letterSpacing:"0.6px"}}>PEER TO PEER</div></div>
             <div style={{marginLeft:"auto",width:8,height:8,borderRadius:"50%",background:"#EE0000",animation:"pulse-red 2s infinite"}}/>
           </div>
-          <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>{p2pList.filter(d=>!d.removing).length} active · Person → Person, any item</div>
+          <div style={{fontSize:15,color:"rgba(255,255,255,0.28)"}}>{p2pList.filter(d=>!d.removing).length} active · Person → Person, any item</div>
         </div>
         <div style={{flex:1,overflowY:"auto",padding:"14px 16px"}}>{p2pList.map(d=><P2PCard key={d.id} d={d}/>)}</div>
       </div>
@@ -335,18 +335,18 @@ export default function FleetIntelligence(){
       <div style={{width:"100vw",height:"100vh",display:"flex",flexDirection:"column",fontFamily:"'DM Sans',-apple-system,sans-serif",background:phase===1?"#F4F5F8":"#0A0A0A",overflow:"hidden"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 20px",background:phase===1?"#FFF":"#111111",borderBottom:`1px solid ${phase===1?"#E5E7EB":"rgba(255,255,255,0.06)"}`,flexShrink:0}}>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
-            <button onClick={()=>navigate("/")} style={{width:36,height:36,borderRadius:10,border:`1px solid ${phase===1?"rgba(0,0,0,0.12)":"rgba(255,255,255,0.1)"}`,background:phase===1?"rgba(0,0,0,0.04)":"rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:16,color:phase===1?"#1A1A1A":"#FFF"}}>←</button>
+            <button onClick={()=>navigate("/")} style={{width:36,height:36,borderRadius:10,border:`1px solid ${phase===1?"rgba(0,0,0,0.12)":"rgba(255,255,255,0.1)"}`,background:phase===1?"rgba(0,0,0,0.04)":"rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:21,color:phase===1?"#1A1A1A":"#FFF"}}>←</button>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <div style={{width:28,height:28,borderRadius:7,background:"#EE0000",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🤖</div>
-              <span style={{fontSize:15,fontWeight:700,color:phase===1?"#1A1A1A":"#FFF"}}>Fleet Intelligence</span>
+              <div style={{width:28,height:28,borderRadius:7,background:"#EE0000",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🤖</div>
+              <span style={{fontSize:20,fontWeight:700,color:phase===1?"#1A1A1A":"#FFF"}}>Fleet Intelligence</span>
             </div>
           </div>
           <div style={{display:"flex",background:phase===1?"rgba(0,0,0,0.05)":"rgba(255,255,255,0.06)",borderRadius:10,padding:3}}>
             {[{n:1,label:"Bot Selection"},{n:2,label:"Live Fleet"}].map(p=>(
-              <button key={p.n} onClick={()=>setPhase(p.n)} style={{padding:"8px 20px",borderRadius:8,border:"none",background:phase===p.n?"#3B82F6":"transparent",color:phase===p.n?"#FFF":phase===1?"rgba(0,0,0,0.4)":"rgba(255,255,255,0.4)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{p.label}</button>
+              <button key={p.n} onClick={()=>setPhase(p.n)} style={{padding:"8px 20px",borderRadius:8,border:"none",background:phase===p.n?"#3B82F6":"transparent",color:phase===p.n?"#FFF":phase===1?"rgba(0,0,0,0.4)":"rgba(255,255,255,0.4)",fontSize:16,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{p.label}</button>
             ))}
           </div>
-          <div style={{fontSize:11,color:phase===1?"rgba(0,0,0,0.3)":"rgba(255,255,255,0.25)"}}>Powered by <span style={{color:"#EE0000",fontWeight:700}}>Verizon 5G</span></div>
+          <div style={{fontSize:15,color:phase===1?"rgba(0,0,0,0.3)":"rgba(255,255,255,0.25)"}}>Powered by <span style={{color:"#EE0000",fontWeight:700}}>Verizon 5G</span></div>
         </div>
         <div style={{flex:1,display:"flex",overflow:"hidden"}}>
           {phase===1?<Phase1/>:<Phase2/>}

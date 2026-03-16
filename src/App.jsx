@@ -198,10 +198,10 @@ function ZoneMarker({ zone, selected, onTap, dimmed }) {
         fill={selected ? "#EE0000" : dimmed ? "#B0B5BF" : "#1A1A1A"}
         style={{ transition: "all 0.15s" }} />
       {!dimmed && <circle cx={zone.x} cy={zone.y} r={selected ? 6 : 4} fill="#FFF" opacity="0.85" />}
-      <text x={zone.x} y={zone.y + (selected ? 27 : dimmed ? 18 : 22)}
+      <text x={zone.x} y={zone.y + (selected ? 30 : dimmed ? 22 : 26)}
         textAnchor="middle"
         fill={selected ? "#EE0000" : dimmed ? "#B0B5BF" : "#374151"}
-        fontSize={selected ? "11" : dimmed ? "8" : "9"}
+        fontSize={selected ? "14" : dimmed ? "11" : "12"}
         fontWeight={selected ? "700" : "500"}
         fontFamily="'DM Sans',sans-serif">
         {zone.name}
@@ -483,7 +483,7 @@ export default function App() {
               </div>
 
               {/* Pickup zone */}
-              <label style={{ fontSize:10, fontWeight:700, color:"#9CA3AF", letterSpacing:"0.8px", display:"block", marginBottom:5, flexShrink:0 }}>PICKUP ZONE</label>
+              <label style={{ fontSize:10, fontWeight:700, color:"#9CA3AF", letterSpacing:"0.8px", display:"block", marginBottom:5, flexShrink:0 }}>SEND FROM</label>
               <div style={{ flex:1, borderRadius:18, overflow:"hidden", background:"#ECEEF1", position:"relative", minHeight:200 }}>
                 <CampusMap>
                   {ZONES.map(z => <ZoneMarker key={z.id} zone={z} selected={pickupZone === z.id} onTap={() => setPickupZone(z.id)} />)}
@@ -836,7 +836,7 @@ export default function App() {
           {screen === 1 && !showSendConfirm && (
             <div style={{ padding:"8px 20px", flexShrink:0 }}>
               <button onClick={handleSendConfirm} disabled={!canSend} style={{ width:"100%", padding:"16px", borderRadius:16, border:"none", background: canSend ? "#EE0000" : "#F3F4F6", color: canSend ? "#FFF" : "#9CA3AF", fontSize:15, fontWeight:700, cursor: canSend ? "pointer" : "default", fontFamily:"inherit", transition:"all 0.15s" }}>
-                Confirm & Request Delivery
+                Send Delivery Request
               </button>
             </div>
           )}
